@@ -49,5 +49,8 @@ while(!glfwWindowShouldClose(window))
 
 <img width="647" height="368" alt="3" src="https://github.com/user-attachments/assets/f363cdda-a16f-47ef-aa4a-852770b83a66" />
 
+效果如下图：
+
+<img width="477" height="362" alt="4" src="https://github.com/user-attachments/assets/78591260-abaf-4466-af98-09e093e6dd7d" />
 
 
