@@ -1,4 +1,4 @@
-#这里是我的opengl学习笔记
+<img width="628" height="359" alt="image" src="https://github.com/user-attachments/assets/20d38524-4d7c-49ed-a0ab-d807f60b8021" />#这里是我的opengl学习笔记
 
 一、opengl环境搭建
 
@@ -55,3 +55,27 @@ while(!glfwWindowShouldClose(window))
 
 
 三、创建三角形
+
+顶点数组对象：VAO
+
+顶点缓冲对象：VBO
+
+元素缓冲对象：EBO 或 IBO
+
+3D坐标转为2D坐标的处理过程是由OpenGL的图形渲染管线管理的
+
+<img width="628" height="359" alt="pipeline" src="https://github.com/user-attachments/assets/cd2b32e1-8299-4058-bffc-04d561639ef1" />
+
+顶点着色器：输入单个顶点，转换三维坐标、处理顶点属性，输出变换后的顶点
+
+几何着色器（可选）：接收一组构成图元的顶点，可新增 / 修改顶点生成新图元
+
+图元装配：收集输出顶点，按指定规则组装成三角形、线段等基础图元
+
+光栅化：将图元转为屏幕像素片段，提前裁掉视口外片段以优化性能
+
+片段着色器：以片段为输入，结合光照、纹理等数据计算像素最终颜色
+
+深度 / 模板测试与混合：依据深度、透明度丢弃遮挡片段或混合颜色，输出屏幕最终像素
+
+
