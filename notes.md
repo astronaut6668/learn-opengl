@@ -51,6 +51,23 @@ while(!glfwWindowShouldClose(window))
 
 效果如下图：
 
+ 三、创建三角形
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <img width="477" height="362" alt="4" src="https://github.com/user-attachments/assets/78591260-abaf-4466-af98-09e093e6dd7d" />
 
 
