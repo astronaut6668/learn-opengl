@@ -1,4 +1,4 @@
-<img width="628" height="359" alt="image" src="https://github.com/user-attachments/assets/20d38524-4d7c-49ed-a0ab-d807f60b8021" />#这里是我的opengl学习笔记
+#这里是我的opengl学习笔记
 
 一、opengl环境搭建
 
@@ -159,4 +159,104 @@ layout(location=0) in vec3 aPos 定义顶点输入属性，location 编号用于
 
 
 <img width="404" height="318" alt="1" src="https://github.com/user-attachments/assets/f79704ce-367f-4cc2-baab-302ce533386f" />
+
+
+
+四、着色器
+
+着色器基础
+
+  着色器是运行在 GPU 上的小程序，对应渲染管线单独阶段，功能仅为输入转换输出；各个着色器互相独立，只能依靠输入、输出变量传递数据
+
+  使用 GLSL 语言编写，语法近似 C 语言，原生内置向量、矩阵相关运算
+
+  标准书写框架：首行声明版本，依次定义 in 输入、out 输出、uniform 全局变量，main 为固定执行入口
+  
+GLSL 数据类型
+
+  基础单值：bool、float、double、int、uint
+
+  向量：分为 vecn、bvecn、ivecn、uvecn、dvecn，n 代表 2/3/4 个分量，绘图场景最常用 vecn 存储坐标、色彩
+
+  向量操作：可用 x/y/z/w、r/g/b/a、s/t/p/q 读取分量；支持分量重组语法；支持多个向量拼接构造新向量
+
+in 输入与 out 输出
+
+  顶点着色器输入叫做顶点属性，接收 CPU 通过 VBO 传入的顶点数据，搭配 layout (location) 标记序号，方便 CPU 绑定；硬件存在顶点属性数量上限，可调用 glGetIntegerv 查询 GL_MAX_VERTEX_ATTRIBS
+
+  着色器间数据传递规则：前一级着色器定义 out 变量，后一级定义同名、同类型 in 变量，程序链接阶段自动完成数据互通
+
+  片段着色器强制需要 vec4 类型 out 输出颜色，缺少输出会导致画面全黑或全白
+
+Uniform 全局变量
+
+  核心特性
+
+    全局生效：一套着色器程序内所有着色器均可访问
+
+    数值持久：赋值后保持不变，直到 CPU 主动更新
+
+    数据流向：CPU 单向传递数据至 GPU 着色器
+
+  完整使用流程
+
+    在 GLSL 着色器内声明 uniform 变量
+
+    CPU 调用 glGetUniformLocation 查询该变量的位置索引
+
+    激活着色器程序 glUseProgram 后，调用 glUniform 系列函数赋值
+
+    glUniform 函数依靠后缀区分数据类型：f 浮点、i 整型、ui 无符号整型、数字 + f 多浮点、fv 浮点数组
+
+    注意事项：声明后全程未使用的 uniform 会被编译器自动剔除，查询位置会返回 - 1，引发程序错误
+
+    适用场景：控制整体模型统一颜色、运行时间、变换矩阵等全局参数
+
+多顶点属性（坐标 + 顶点自带色彩）
+
+  顶点数组可混合存放多组属性，单个顶点依次存储坐标、RGB 颜色等多类数据
+
+  CPU 配置顶点属性依靠 glVertexAttribPointer，两个关键参数
+
+    步长 stride：单个顶点全部数据的总字节大小
+
+    偏移 offset：当前属性距离顶点数据起始位置的字节距离
+
+    配置完成后调用 glEnableVertexAttribArray 开启对应属性通道
+
+  片段插值原理：光栅化阶段对三角形内部所有片段做线性插值，顶点设置的不同颜色会平滑渐变混合，形成过渡色彩画面
+
+封装 Shader 工具类
+
+  设计目的：简化重复的源码读取、编译、链接、错误打印、uniform 赋值流程
+
+  核心能力
+
+    构造函数接收顶点、片段着色器文件路径，通过文件流读取硬盘上的着色器源码
+
+    自动执行 glCreateShader、glShaderSource、glCompileShader 编译着色器
+
+    创建着色器程序 ID，执行 glAttachShader、glLinkProgram 链接
+
+    调用 glGetShaderiv、glGetShaderInfoLog 捕获编译错误，glGetProgramiv、glGetProgramInfoLog 捕获链接错误
+
+    封装 use 方法执行 glUseProgram 激活程序
+
+    封装 setBool、setInt、setFloat 等接口，内部自动查询 uniform 位置并赋值
+
+    使用方式：创建 Shader 对象传入着色器文件路径，渲染循环中调用 use 激活，调用 set 系列方法修改全局 uniform 参数
+
+核心概念区分
+
+  顶点属性：每个顶点独有数据，从 VBO 传入顶点着色器，各顶点数值可互不相同
+
+  Uniform：全局共用数据，整个绘制物体共用同一套数值
+
+  in/out：着色器之间的数据传输通道，同名同类型变量自动匹配
+
+  片段插值：光栅化自动平滑混合三角形内所有片段的输入数据
+  
+示例：
+
+<img width="600" height="470" alt="image" src="https://github.com/user-attachments/assets/535c6428-9f3c-4dc2-a0c4-07e6dd9a190b" />
 
